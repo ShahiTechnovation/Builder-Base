@@ -1,0 +1,19 @@
+
+[
+  {
+    "name": "todo-app-react",
+    "url": "https://github.com/mdn/todo-react"
+  },
+  {
+    "name": "calculator-js",
+    "url": "https://github.com/ahfarmer/calculator"
+  },
+  {
+    "name": "weather-app",
+    "url": "https://github.com/bradtraversy/vanillawebprojects"
+  },
+  {
+    "name": "expense-tracker",
+    "url": "https://github.com/bradtraversy/expense-tracker-react"
+  }
+]
