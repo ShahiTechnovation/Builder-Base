@@ -3,7 +3,7 @@ import React from 'react';
 import { useWeb3 } from '../contexts/Web3Context';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Wallet, LogOut } from 'lucide-react';
+import { Wallet, LogOut, AlertCircle } from 'lucide-react';
 
 export const WalletConnection = () => {
   const { account, isConnected, connect, disconnect, loading } = useWeb3();
@@ -11,6 +11,7 @@ export const WalletConnection = () => {
   if (loading) {
     return (
       <Button disabled className="animate-pulse">
+        <Wallet className="mr-2 h-4 w-4" />
         Connecting...
       </Button>
     );
@@ -41,6 +42,22 @@ export const WalletConnection = () => {
           </div>
         </CardContent>
       </Card>
+    );
+  }
+
+  // Check if MetaMask is available
+  if (typeof window !== 'undefined' && typeof window.ethereum === 'undefined') {
+    return (
+      <div className="flex items-center space-x-2">
+        <Button 
+          onClick={() => window.open('https://metamask.io/download/', '_blank')}
+          variant="outline"
+          className="text-orange-600 border-orange-200 hover:bg-orange-50"
+        >
+          <AlertCircle className="mr-2 h-4 w-4" />
+          Install MetaMask
+        </Button>
+      </div>
     );
   }
 

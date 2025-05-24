@@ -15,48 +15,65 @@ export const BNB_TESTNET_CONFIG = {
 };
 
 export const connectWallet = async () => {
-  if (typeof window.ethereum !== 'undefined') {
-    try {
-      // Request account access
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
+  console.log('connectWallet called');
+  
+  if (typeof window.ethereum === 'undefined') {
+    throw new Error('MetaMask not installed');
+  }
 
-      // Check if we're on BNB Testnet
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      
-      if (chainId !== BNB_TESTNET_CONFIG.chainId) {
-        // Switch to BNB Testnet
-        try {
+  try {
+    console.log('Requesting accounts...');
+    // Request account access
+    const accounts = await window.ethereum.request({
+      method: 'eth_requestAccounts',
+    });
+
+    console.log('Accounts received:', accounts);
+
+    if (!accounts || accounts.length === 0) {
+      throw new Error('No accounts found');
+    }
+
+    // Check if we're on BNB Testnet
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    console.log('Current chain ID:', chainId);
+    
+    if (chainId !== BNB_TESTNET_CONFIG.chainId) {
+      console.log('Switching to BNB Testnet...');
+      // Switch to BNB Testnet
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: BNB_TESTNET_CONFIG.chainId }],
+        });
+      } catch (switchError: any) {
+        console.log('Switch error:', switchError);
+        // This error code indicates that the chain has not been added to MetaMask
+        if (switchError.code === 4902) {
+          console.log('Adding BNB Testnet...');
           await window.ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: BNB_TESTNET_CONFIG.chainId }],
+            method: 'wallet_addEthereumChain',
+            params: [BNB_TESTNET_CONFIG],
           });
-        } catch (switchError: any) {
-          // This error code indicates that the chain has not been added to MetaMask
-          if (switchError.code === 4902) {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [BNB_TESTNET_CONFIG],
-            });
-          }
+        } else {
+          throw switchError;
         }
       }
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      
-      return {
-        account: accounts[0],
-        provider,
-        signer,
-      };
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-      throw error;
     }
-  } else {
-    throw new Error('MetaMask not installed');
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    
+    console.log('Wallet connection successful');
+    
+    return {
+      account: accounts[0],
+      provider,
+      signer,
+    };
+  } catch (error) {
+    console.error('Error in connectWallet:', error);
+    throw error;
   }
 };
 
