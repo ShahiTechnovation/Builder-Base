@@ -18,10 +18,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Web3Provider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Web3Provider>
           <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
             <Header />
             <Routes>
@@ -33,8 +33,8 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
-        </BrowserRouter>
-      </Web3Provider>
+        </Web3Provider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
