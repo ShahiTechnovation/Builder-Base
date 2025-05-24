@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useWeb3 } from '../contexts/Web3Context';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -6,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { HabitTracker } from '../components/HabitTracker';
+import { NFTMinting } from '../components/NFTMinting';
 import { fetchUserRepos, analyzeRepository } from '../lib/github';
 import { GitHubRepo, ProjectAnalysis, BuilderProfile } from '../types';
 import { Github, Star, GitFork, Calendar, Trophy, Zap, Plus, ExternalLink } from 'lucide-react';
@@ -134,6 +134,11 @@ const Builder = () => {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
+          {/* NFT Minting Section */}
+          {profile && (
+            <NFTMinting userLevel={profile.level} userXP={profile.xp} />
+          )}
+
           {/* GitHub Integration */}
           <Card>
             <CardHeader>
