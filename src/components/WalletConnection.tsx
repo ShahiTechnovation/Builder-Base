@@ -1,0 +1,56 @@
+
+import React from 'react';
+import { useWeb3 } from '../contexts/Web3Context';
+import { Button } from './ui/button';
+import { Card, CardContent } from './ui/card';
+import { Wallet, LogOut } from 'lucide-react';
+
+export const WalletConnection = () => {
+  const { account, isConnected, connect, disconnect, loading } = useWeb3();
+
+  if (loading) {
+    return (
+      <Button disabled className="animate-pulse">
+        Connecting...
+      </Button>
+    );
+  }
+
+  if (isConnected && account) {
+    return (
+      <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Wallet className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="text-sm font-medium text-green-800">Connected</p>
+                <p className="text-xs text-green-600">
+                  {account.slice(0, 6)}...{account.slice(-4)}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={disconnect}
+              className="hover:bg-red-50 hover:border-red-200"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Button 
+      onClick={connect}
+      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+    >
+      <Wallet className="mr-2 h-4 w-4" />
+      Connect Wallet
+    </Button>
+  );
+};
