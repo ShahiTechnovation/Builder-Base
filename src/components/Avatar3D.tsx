@@ -1,7 +1,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sphere, Box, Torus } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface AnimatedAvatarProps {
@@ -48,14 +48,18 @@ const AnimatedAvatar = ({ level, isFloating = true }: AnimatedAvatarProps) => {
       // Add floating rings for level 2+
       for (let i = 0; i < level; i++) {
         accessories.push(
-          <Torus
+          <mesh
             key={`ring-${i}`}
-            args={[1.5 + i * 0.2, 0.05, 16, 100]}
             position={[0, 0, 0]}
             rotation={[Math.PI / 2, i * 0.5, 0]}
           >
-            <meshStandardMaterial color={getAvatarColor()} transparent opacity={0.6} />
-          </Torus>
+            <torusGeometry args={[1.5 + i * 0.2, 0.05, 16, 100]} />
+            <meshStandardMaterial 
+              color={getAvatarColor()} 
+              transparent 
+              opacity={0.6} 
+            />
+          </mesh>
         );
       }
     }
@@ -70,7 +74,8 @@ const AnimatedAvatar = ({ level, isFloating = true }: AnimatedAvatarProps) => {
       onPointerOut={() => setHovered(false)}
     >
       {/* Main avatar body */}
-      <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]}>
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.8, 32, 32]} />
         <meshStandardMaterial 
           color={getAvatarColor()} 
           metalness={0.3} 
@@ -78,29 +83,34 @@ const AnimatedAvatar = ({ level, isFloating = true }: AnimatedAvatarProps) => {
           emissive={getAvatarColor()}
           emissiveIntensity={0.1}
         />
-      </Sphere>
+      </mesh>
       
       {/* Eyes */}
-      <Sphere args={[0.1, 16, 16]} position={[-0.2, 0.2, 0.7]}>
+      <mesh position={[-0.2, 0.2, 0.7]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
         <meshStandardMaterial color="#ffffff" />
-      </Sphere>
-      <Sphere args={[0.1, 16, 16]} position={[0.2, 0.2, 0.7]}>
+      </mesh>
+      <mesh position={[0.2, 0.2, 0.7]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
         <meshStandardMaterial color="#ffffff" />
-      </Sphere>
+      </mesh>
       
       {/* Pupils */}
-      <Sphere args={[0.05, 16, 16]} position={[-0.2, 0.2, 0.75]}>
+      <mesh position={[-0.2, 0.2, 0.75]}>
+        <sphereGeometry args={[0.05, 16, 16]} />
         <meshStandardMaterial color="#000000" />
-      </Sphere>
-      <Sphere args={[0.05, 16, 16]} position={[0.2, 0.2, 0.75]}>
+      </mesh>
+      <mesh position={[0.2, 0.2, 0.75]}>
+        <sphereGeometry args={[0.05, 16, 16]} />
         <meshStandardMaterial color="#000000" />
-      </Sphere>
+      </mesh>
       
       {/* Level crown for high levels */}
       {level >= 5 && (
-        <Box args={[0.3, 0.2, 0.1]} position={[0, 1, 0]}>
+        <mesh position={[0, 1, 0]}>
+          <boxGeometry args={[0.3, 0.2, 0.1]} />
           <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
-        </Box>
+        </mesh>
       )}
       
       {/* Level accessories */}
