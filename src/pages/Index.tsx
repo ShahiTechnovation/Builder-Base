@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useWeb3 } from '../contexts/Web3Context';
@@ -8,7 +7,7 @@ import { Badge } from '../components/ui/badge';
 import { Code2, Brain, Users, Trophy, Zap, Github, ArrowRight } from 'lucide-react';
 
 const Index = () => {
-  const { isConnected } = useWeb3();
+  const { isConnected, connect } = useWeb3();
 
   const features = [
     {
@@ -61,7 +60,11 @@ const Index = () => {
         
         {!isConnected ? (
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3">
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+              onClick={() => connect('opbnb')}
+            >
               <Zap className="mr-2 h-5 w-5" />
               Connect Wallet to Start
             </Button>
@@ -167,7 +170,12 @@ const Index = () => {
             Join thousands of developers building the future of Web3 education
           </p>
           {!isConnected ? (
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-3">
+            <Button 
+              size="lg" 
+              variant="secondary" 
+              className="text-lg px-8 py-3"
+              onClick={() => connect('opbnb')}
+            >
               <Zap className="mr-2 h-5 w-5" />
               Connect Wallet Now
             </Button>
