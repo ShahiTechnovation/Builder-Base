@@ -1,7 +1,20 @@
 
 import { ethers } from 'ethers';
 
-// BNB Testnet configuration
+// OpBNB Testnet configuration (default)
+export const OPBNB_TESTNET_CONFIG = {
+  chainId: '0x15EB', // 5611 in decimal
+  chainName: 'opBNB Testnet',
+  nativeCurrency: {
+    name: 'tBNB',
+    symbol: 'tBNB',
+    decimals: 18,
+  },
+  rpcUrls: ['https://opbnb-testnet-rpc.bnbchain.org'],
+  blockExplorerUrls: ['https://testnet.opbnbscan.com/'],
+};
+
+// BNB Testnet configuration (fallback)
 export const BNB_TESTNET_CONFIG = {
   chainId: '0x61', // 97 in decimal
   chainName: 'BNB Smart Chain Testnet',
@@ -14,8 +27,14 @@ export const BNB_TESTNET_CONFIG = {
   blockExplorerUrls: ['https://testnet.bscscan.com/'],
 };
 
-export const connectWallet = async () => {
-  console.log('connectWallet called');
+// Supported networks
+export const SUPPORTED_NETWORKS = {
+  opbnb: OPBNB_TESTNET_CONFIG,
+  bnb: BNB_TESTNET_CONFIG,
+};
+
+export const connectWallet = async (preferredNetwork: keyof typeof SUPPORTED_NETWORKS = 'opbnb') => {
+  console.log('connectWallet called with preferred network:', preferredNetwork);
   
   if (typeof window.ethereum === 'undefined') {
     throw new Error('MetaMask not installed');
@@ -34,26 +53,28 @@ export const connectWallet = async () => {
       throw new Error('No accounts found');
     }
 
-    // Check if we're on BNB Testnet
-    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-    console.log('Current chain ID:', chainId);
+    const targetNetwork = SUPPORTED_NETWORKS[preferredNetwork];
     
-    if (chainId !== BNB_TESTNET_CONFIG.chainId) {
-      console.log('Switching to BNB Testnet...');
-      // Switch to BNB Testnet
+    // Check if we're on the preferred network
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    console.log('Current chain ID:', chainId, 'Target:', targetNetwork.chainId);
+    
+    if (chainId !== targetNetwork.chainId) {
+      console.log(`Switching to ${targetNetwork.chainName}...`);
+      // Switch to preferred network
       try {
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: BNB_TESTNET_CONFIG.chainId }],
+          params: [{ chainId: targetNetwork.chainId }],
         });
       } catch (switchError: any) {
         console.log('Switch error:', switchError);
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
-          console.log('Adding BNB Testnet...');
+          console.log(`Adding ${targetNetwork.chainName}...`);
           await window.ethereum.request({
             method: 'wallet_addEthereumChain',
-            params: [BNB_TESTNET_CONFIG],
+            params: [targetNetwork],
           });
         } else {
           throw switchError;
@@ -70,6 +91,7 @@ export const connectWallet = async () => {
       account: accounts[0],
       provider,
       signer,
+      network: targetNetwork.chainName,
     };
   } catch (error) {
     console.error('Error in connectWallet:', error);
@@ -82,4 +104,28 @@ export const getProvider = () => {
     return new ethers.BrowserProvider(window.ethereum);
   }
   return null;
+};
+
+export const switchNetwork = async (networkKey: keyof typeof SUPPORTED_NETWORKS) => {
+  if (typeof window.ethereum === 'undefined') {
+    throw new Error('MetaMask not installed');
+  }
+
+  const targetNetwork = SUPPORTED_NETWORKS[networkKey];
+  
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: targetNetwork.chainId }],
+    });
+  } catch (switchError: any) {
+    if (switchError.code === 4902) {
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [targetNetwork],
+      });
+    } else {
+      throw switchError;
+    }
+  }
 };

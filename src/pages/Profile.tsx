@@ -6,11 +6,13 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Avatar3D } from '../components/Avatar3D';
+import { NFTMinting } from '../components/NFTMinting';
 import { BuilderProfile, BeginnerProfile, HabitEntry } from '../types';
-import { User, Trophy, Zap, Calendar, Github, Target, TrendingUp, Award } from 'lucide-react';
+import { User, Trophy, Zap, Calendar, Github, Target, TrendingUp, Award, Crown } from 'lucide-react';
 
 const Profile = () => {
-  const { account, isConnected } = useWeb3();
+  const { account, isConnected, currentNetwork } = useWeb3();
   const [builderProfile, setBuilderProfile] = useState<BuilderProfile | null>(null);
   const [learnerProfile, setLearnerProfile] = useState<BeginnerProfile | null>(null);
   const [habitEntries, setHabitEntries] = useState<HabitEntry[]>([]);
@@ -80,7 +82,7 @@ const Profile = () => {
           <CardContent className="p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Connect Your Wallet</h2>
             <p className="text-gray-600 mb-4">
-              Please connect your wallet to view your profile
+              Please connect your wallet to view your profile and 3D avatar
             </p>
           </CardContent>
         </Card>
@@ -95,15 +97,77 @@ const Profile = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Your Profile</h1>
+        <h1 className="text-3xl font-bold mb-2">Your Builder Profile</h1>
         <p className="text-gray-600">
-          Track your progress as both a builder and learner
+          Track your progress as both a builder and learner with your personalized 3D avatar
         </p>
+        {currentNetwork && (
+          <Badge variant="outline" className="mt-2">
+            Connected to {currentNetwork}
+          </Badge>
+        )}
+      </div>
+
+      {/* 3D Avatar and Profile Header */}
+      <Card className="mb-8 bg-gradient-to-r from-purple-50 via-blue-50 to-pink-50 border-purple-200">
+        <CardContent className="p-8">
+          <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
+            {/* 3D Avatar */}
+            <div className="relative">
+              <Avatar3D level={overallLevel} className="w-48 h-48 md:w-64 md:h-64" />
+              <div className="absolute -top-2 -right-2">
+                <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                  <Crown className="w-3 h-3 mr-1" />
+                  Level {overallLevel}
+                </Badge>
+              </div>
+            </div>
+            
+            {/* Profile Info */}
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Builder Level {overallLevel}
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {account?.slice(0, 6)}...{account?.slice(-4)}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">{totalXP.toLocaleString()}</div>
+                  <div className="text-sm text-gray-600">Total XP</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {(builderProfile?.totalProjects || 0) + (learnerProfile?.completedProjects || 0)}
+                  </div>
+                  <div className="text-sm text-gray-600">Projects</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{habitStats.totalEntries}</div>
+                  <div className="text-sm text-gray-600">Habit Entries</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-600">{builderProfile?.nftRewards.length || 0}</div>
+                  <div className="text-sm text-gray-600">NFT Rewards</div>
+                </div>
+              </div>
+              <Progress value={(totalXP % 1000) / 10} className="h-3 mb-2" />
+              <p className="text-sm text-gray-600">
+                {1000 - (totalXP % 1000)} XP to level {overallLevel + 1}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* NFT Minting Section */}
+      <div className="mb-8">
+        <NFTMinting userLevel={overallLevel} userXP={totalXP} />
       </div>
 
       {/* Overview Cards */}
       <div className="grid md:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200 hover:scale-105 transition-transform duration-200">
           <CardContent className="p-6 text-center">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
               <User className="h-6 w-6 text-white" />
@@ -113,7 +177,7 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+        <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200 hover:scale-105 transition-transform duration-200">
           <CardContent className="p-6 text-center">
             <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
               <Zap className="h-6 w-6 text-white" />
@@ -123,7 +187,7 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">
+        <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-orange-200 hover:scale-105 transition-transform duration-200">
           <CardContent className="p-6 text-center">
             <div className="w-12 h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
               <Trophy className="h-6 w-6 text-white" />
@@ -135,7 +199,7 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
+        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 hover:scale-105 transition-transform duration-200">
           <CardContent className="p-6 text-center">
             <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
               <Target className="h-6 w-6 text-white" />

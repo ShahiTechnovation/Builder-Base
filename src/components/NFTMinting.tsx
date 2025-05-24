@@ -4,7 +4,7 @@ import { useWeb3 } from '../contexts/Web3Context';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Trophy, Crown, Zap, ExternalLink, Loader2 } from 'lucide-react';
+import { Trophy, Crown, Zap, ExternalLink, Loader2, Network } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface NFTMintingProps {
@@ -21,7 +21,7 @@ const NFT_LEVELS = {
 };
 
 export const NFTMinting = ({ userLevel, userXP }: NFTMintingProps) => {
-  const { account, isConnected } = useWeb3();
+  const { account, isConnected, currentNetwork, switchToNetwork } = useWeb3();
   const [mintingLevel, setMintingLevel] = useState<number | null>(null);
 
   const handleMintNFT = async (level: number) => {
@@ -34,6 +34,24 @@ export const NFTMinting = ({ userLevel, userXP }: NFTMintingProps) => {
       return;
     }
 
+    // Check if user is on OpBNB testnet, switch if not
+    if (!currentNetwork?.toLowerCase().includes('opbnb')) {
+      try {
+        await switchToNetwork('opbnb');
+        toast({
+          title: "Network Switched",
+          description: "Switched to OpBNB Testnet for optimal NFT minting",
+        });
+      } catch (error) {
+        toast({
+          title: "Network Switch Failed",
+          description: "Please manually switch to OpBNB Testnet",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setMintingLevel(level);
     
     try {
@@ -43,7 +61,7 @@ export const NFTMinting = ({ userLevel, userXP }: NFTMintingProps) => {
       
       toast({
         title: "NFT Minting Started",
-        description: `Opening Level ${level} NFT minting page. Complete the process on the new tab.`,
+        description: `Opening Level ${level} NFT minting page on OpBNB Testnet. Complete the process on the new tab.`,
       });
     } catch (error) {
       console.error('Error opening NFT minting:', error);
@@ -88,22 +106,36 @@ export const NFTMinting = ({ userLevel, userXP }: NFTMintingProps) => {
         <CardTitle className="flex items-center space-x-2">
           <Crown className="h-6 w-6 text-purple-600" />
           <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            Unlock Your Builder Character
+            Unlock Your Builder Character NFTs
           </span>
         </CardTitle>
         <p className="text-gray-600">
-          Mint exclusive NFTs based on your coding achievements and level up your builder status
+          Mint exclusive NFTs on OpBNB Testnet based on your coding achievements and level up your builder status
         </p>
+        {currentNetwork && (
+          <div className="flex items-center space-x-2">
+            <Network className="h-4 w-4 text-blue-600" />
+            <Badge variant="outline" className="text-xs">
+              Connected: {currentNetwork}
+            </Badge>
+            {!currentNetwork.toLowerCase().includes('opbnb') && (
+              <Badge variant="destructive" className="text-xs">
+                Switch to OpBNB for better experience
+              </Badge>
+            )}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Current Level Display */}
-        <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-white/20">
-          <div className={`w-20 h-20 bg-gradient-to-r ${getLevelColor(userLevel)} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+        <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-white/20 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 to-blue-400/10 animate-pulse"></div>
+          <div className={`w-20 h-20 bg-gradient-to-r ${getLevelColor(userLevel)} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg animate-bounce`}>
             <div className="text-white font-bold text-xl">L{userLevel}</div>
           </div>
           <h3 className="text-xl font-bold text-gray-800 mb-2">Level {userLevel} Builder</h3>
           <p className="text-gray-600 mb-4">{userXP.toLocaleString()} XP Earned</p>
-          <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+          <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white animate-pulse">
             {userLevel >= 5 ? 'Master Builder' : `${1000 - (userXP % 1000)} XP to next level`}
           </Badge>
         </div>
@@ -117,30 +149,36 @@ export const NFTMinting = ({ userLevel, userXP }: NFTMintingProps) => {
             return (
               <Card 
                 key={level} 
-                className={`relative overflow-hidden transition-all duration-300 ${
+                className={`relative overflow-hidden transition-all duration-300 transform ${
                   unlocked 
-                    ? 'bg-gradient-to-br from-white to-gray-50 border-2 border-purple-200 hover:shadow-lg hover:scale-105' 
-                    : 'bg-gray-100 border-gray-200 opacity-60'
+                    ? 'bg-gradient-to-br from-white to-gray-50 border-2 border-purple-200 hover:shadow-xl hover:scale-105 hover:-rotate-1' 
+                    : 'bg-gray-100 border-gray-200 opacity-60 grayscale'
                 }`}
               >
                 <CardContent className="p-4 text-center">
-                  <div className={`w-12 h-12 bg-gradient-to-r ${getLevelColor(level)} rounded-full flex items-center justify-center mx-auto mb-3 ${unlocked ? 'shadow-md' : 'grayscale'}`}>
+                  {unlocked && (
+                    <div className="absolute top-2 right-2">
+                      <div className="w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+                    </div>
+                  )}
+                  
+                  <div className={`w-12 h-12 bg-gradient-to-r ${getLevelColor(level)} rounded-full flex items-center justify-center mx-auto mb-3 transition-transform duration-300 ${unlocked ? 'shadow-md hover:scale-110' : 'grayscale'}`}>
                     {getLevelIcon(level)}
                   </div>
-                  <h4 className="font-bold text-gray-800 mb-2">Level {level}</h4>
+                  <h4 className="font-bold text-gray-800 mb-2">Level {level} NFT</h4>
                   <p className="text-xs text-gray-600 mb-3">
-                    {level === 1 && 'Beginner Builder'}
-                    {level === 2 && 'Emerging Coder'}
-                    {level === 3 && 'Skilled Developer'}
-                    {level === 4 && 'Expert Builder'}
-                    {level === 5 && 'Master Creator'}
+                    {level === 1 && 'Beginner Builder Badge'}
+                    {level === 2 && 'Emerging Coder Certificate'}
+                    {level === 3 && 'Skilled Developer Token'}
+                    {level === 4 && 'Expert Builder Medal'}
+                    {level === 5 && 'Master Creator Crown'}
                   </p>
                   
                   {unlocked ? (
                     <Button 
                       onClick={() => handleMintNFT(level)}
                       disabled={isMinting}
-                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transform transition-all duration-200 hover:scale-105"
                       size="sm"
                     >
                       {isMinting ? (
@@ -151,7 +189,7 @@ export const NFTMinting = ({ userLevel, userXP }: NFTMintingProps) => {
                       ) : (
                         <>
                           <Crown className="mr-2 h-4 w-4" />
-                          Mint NFT
+                          Mint on OpBNB
                         </>
                       )}
                     </Button>
@@ -169,22 +207,23 @@ export const NFTMinting = ({ userLevel, userXP }: NFTMintingProps) => {
           })}
         </div>
 
-        {/* Info Section */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        {/* Enhanced Info Section */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <ExternalLink className="h-4 w-4 text-blue-600" />
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <ExternalLink className="h-4 w-4 text-white" />
             </div>
             <div>
-              <h4 className="font-medium text-blue-900 mb-1">How NFT Minting Works</h4>
+              <h4 className="font-medium text-blue-900 mb-1">OpBNB Testnet NFT Minting</h4>
               <p className="text-sm text-blue-700 mb-2">
-                Each level unlocks a unique NFT that represents your coding achievements. 
-                Clicking "Mint NFT" will open the minting page in a new tab.
+                Your Builder NFTs are minted on OpBNB Testnet for fast, low-cost transactions. 
+                Each level unlocks a unique NFT that represents your coding achievements.
               </p>
               <ul className="text-xs text-blue-600 space-y-1">
-                <li>• Connect your wallet on the minting page</li>
-                <li>• Complete the minting transaction</li>
-                <li>• Your NFT will appear in your wallet</li>
+                <li>• Connect your wallet to OpBNB Testnet</li>
+                <li>• Complete the minting transaction (very low fees!)</li>
+                <li>• Your NFT will appear in your wallet instantly</li>
+                <li>• Display your achievements on your profile</li>
               </ul>
             </div>
           </div>
