@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { WalletConnection } from './WalletConnection';
 import { useWeb3 } from '../contexts/Web3Context';
 import { Button } from './ui/button';
-import { Code, Users, Compass, User } from 'lucide-react';
+import { Code, Users, Compass, User, MessageCircle } from 'lucide-react';
 
 export const Header = () => {
   const { isConnected } = useWeb3();
@@ -21,7 +21,7 @@ export const Header = () => {
               <Code className="h-5 w-5 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              NeuralForge
+              Builder Base
             </span>
           </Link>
 
@@ -52,6 +52,15 @@ export const Header = () => {
                 >
                   <Users className="h-4 w-4" />
                   <span>Learner</span>
+                </Button>
+              </Link>
+              <Link to="/community">
+                <Button 
+                  variant={isActive('/community') ? 'default' : 'ghost'}
+                  className="flex items-center space-x-2"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span>Community</span>
                 </Button>
               </Link>
               <Link to="/profile">

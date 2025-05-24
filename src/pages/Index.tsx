@@ -127,7 +127,7 @@ const Index = () => {
       {/* How It Works */}
       <Card className="bg-gradient-to-r from-gray-50 to-gray-100 mb-16">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl mb-4">How NeuralForge Works</CardTitle>
+          <CardTitle className="text-3xl mb-4">How Builder Base Works</CardTitle>
           <CardDescription className="text-lg max-w-2xl mx-auto">
             A simple 3-step process to revolutionize how developers share knowledge and beginners learn
           </CardDescription>

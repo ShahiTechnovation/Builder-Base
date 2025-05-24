@@ -11,6 +11,7 @@ import Builder from "./pages/Builder";
 import Learner from "./pages/Learner";
 import Explore from "./pages/Explore";
 import Profile from "./pages/Profile";
+import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/builder" element={<Builder />} />
               <Route path="/learner" element={<Learner />} />
               <Route path="/explore" element={<Explore />} />
+              <Route path="/community" element={<Community />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
