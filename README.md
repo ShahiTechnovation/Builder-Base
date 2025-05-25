@@ -23,6 +23,15 @@ Builder Base is the ultimate Web3 learning platform where developers showcase th
 - Earn NFTs and platform tokens for contributions, milestones, and learning achievements
 - Level up your profile as you build, learn, and contribute
 
+## 🌟 NFT REWARDS Contract Address - 
+- Level 1- 0xFF49cF433184e577cF87118e20E3dC77f512Caab
+- Level 2- 0xc7237B87e3cE6e50FA068b11627A539E33D397aE
+- Level 3- 0xAa14D16C208788E54C339650DFE361e42B9DA349
+- Level 4- 0x64Ee283964CA405930e96b4Cd7a238278276278b
+- Level 5- 0x4212F63b1A5EA77493c008173583A0e694435940
+
+Deployment Address - https://testnet.opbnbscan.com/address/0x15e2b0f779e87f0f29070190c8c0c8a1c38ad011
+
 ## 🔄 How It Works
 
 1. **Submit & Analyze**  
@@ -57,7 +66,7 @@ Builder Base is the ultimate Web3 learning platform where developers showcase th
 Connect with like-minded developers, learners, and innovators who are building the future of decentralized education.
 
 - 🐦 [Telegram] -  https://t.me/TheBuilderBase
-- 📬 WhatsApp Community - https://chat.whatsapp.com/Iko7hynwsRmAl6PJu86HMJ
+- 📬 [WhatsApp Community] - https://chat.whatsapp.com/Iko7hynwsRmAl6PJu86HMJ
 
 ---
 
