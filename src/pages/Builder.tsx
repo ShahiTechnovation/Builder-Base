@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useWeb3 } from '../contexts/Web3Context';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -6,18 +7,22 @@ import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { HabitTracker } from '../components/HabitTracker';
 import { NFTMinting } from '../components/NFTMinting';
+import { AIAnalysisDisplay } from '../components/AIAnalysisDisplay';
 import { fetchUserRepos, analyzeRepository } from '../lib/github';
-import { GitHubRepo, ProjectAnalysis, BuilderProfile } from '../types';
-import { Github, Star, GitFork, Calendar, Trophy, Zap, Plus, ExternalLink } from 'lucide-react';
+import { simulateAIAnalysis } from '../lib/aiSimulation';
+import { GitHubRepo, ProjectAnalysis, BuilderProfile, AIAnalysisResult } from '../types';
+import { Github, Star, GitFork, Calendar, Trophy, Zap, Plus, ExternalLink, Brain, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const Builder = () => {
   const { account, isConnected } = useWeb3();
   const [githubUsername, setGithubUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [aiAnalyzing, setAiAnalyzing] = useState(false);
   const [profile, setProfile] = useState<BuilderProfile | null>(null);
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
   const [analyses, setAnalyses] = useState<{ [key: number]: ProjectAnalysis }>({});
+  const [aiAnalysis, setAiAnalysis] = useState<{ repo: GitHubRepo; analysis: AIAnalysisResult } | null>(null);
 
   useEffect(() => {
     if (account) {
@@ -99,6 +104,33 @@ const Builder = () => {
     }
   };
 
+  const handleAIAnalysis = async (repo: GitHubRepo) => {
+    setAiAnalyzing(true);
+    try {
+      toast({
+        title: "AI Analysis Started",
+        description: `Analyzing ${repo.name} with advanced AI...`,
+      });
+
+      const analysis = await simulateAIAnalysis(repo);
+      setAiAnalysis({ repo, analysis });
+
+      toast({
+        title: "AI Analysis Complete!",
+        description: `Generated detailed roadmap for ${repo.name}`,
+      });
+    } catch (error) {
+      console.error('AI Analysis error:', error);
+      toast({
+        title: "AI Analysis Failed",
+        description: "Unable to complete AI analysis. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setAiAnalyzing(false);
+    }
+  };
+
   const getComplexityColor = (complexity: string) => {
     switch (complexity) {
       case 'Beginner': return 'bg-green-100 text-green-800';
@@ -131,6 +163,22 @@ const Builder = () => {
           Submit your GitHub repositories, get AI analysis, and earn XP & NFT rewards
         </p>
       </div>
+
+      {/* AI Analysis Results */}
+      {aiAnalysis && (
+        <div className="mb-8">
+          <AIAnalysisDisplay
+            analysis={aiAnalysis.analysis}
+            repositoryName={aiAnalysis.repo.name}
+            onStartLearning={() => {
+              toast({
+                title: "Learning Path Saved!",
+                description: "You can now follow this roadmap in the Learner section.",
+              });
+            }}
+          />
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
@@ -232,13 +280,31 @@ const Builder = () => {
                         </div>
                         
                         {repo.language && (
-                          <div className="flex items-center space-x-2 mb-2">
-                            <Badge variant="outline">{repo.language}</Badge>
-                            {repo.topics.slice(0, 3).map((topic) => (
-                              <Badge key={topic} variant="secondary" className="text-xs">
-                                {topic}
-                              </Badge>
-                            ))}
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline">{repo.language}</Badge>
+                              {repo.topics.slice(0, 3).map((topic) => (
+                                <Badge key={topic} variant="secondary" className="text-xs">
+                                  {topic}
+                                </Badge>
+                              ))}
+                            </div>
+                            <Button
+                              size="sm"
+                              onClick={() => handleAIAnalysis(repo)}
+                              disabled={aiAnalyzing}
+                              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                            >
+                              {aiAnalyzing ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              ) : (
+                                <>
+                                  <Brain className="mr-2 h-4 w-4" />
+                                  AI Analysis
+                                  <Sparkles className="ml-1 h-3 w-3" />
+                                </>
+                              )}
+                            </Button>
                           </div>
                         )}
 
@@ -337,21 +403,28 @@ const Builder = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Next Steps</CardTitle>
+              <CardTitle className="text-lg">AI Features</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
+              <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+                <Brain className="h-5 w-5 text-purple-600" />
+                <div>
+                  <p className="font-medium text-sm">AI Repository Analysis</p>
+                  <p className="text-xs text-gray-600">Get detailed roadmaps and learning paths</p>
+                </div>
+              </div>
               <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
                 <Github className="h-5 w-5 text-blue-600" />
                 <div>
-                  <p className="font-medium text-sm">Share More Projects</p>
-                  <p className="text-xs text-gray-600">Add more repos to increase your XP</p>
+                  <p className="font-medium text-sm">README-Based Analysis</p>
+                  <p className="text-xs text-gray-600">AI reads project documentation</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
-                <Trophy className="h-5 w-5 text-purple-600" />
+              <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                <Trophy className="h-5 w-5 text-green-600" />
                 <div>
-                  <p className="font-medium text-sm">Earn NFT Rewards</p>
-                  <p className="text-xs text-gray-600">Reach level 10 for exclusive NFTs</p>
+                  <p className="font-medium text-sm">Smart XP Calculation</p>
+                  <p className="text-xs text-gray-600">Earn XP based on project complexity</p>
                 </div>
               </div>
             </CardContent>

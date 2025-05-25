@@ -66,3 +66,49 @@ export interface HabitEntry {
   entry: string;
   mood: 'excited' | 'productive' | 'learning' | 'struggling' | 'accomplished';
 }
+
+// AI Analysis Types
+export interface AIAnalysisResult {
+  projectOverview: {
+    description: string;
+    mainPurpose: string;
+    targetAudience: string;
+    complexity: 'Beginner' | 'Intermediate' | 'Advanced';
+  };
+  techStack: TechStack & {
+    architecture: string[];
+    designPatterns: string[];
+  };
+  learningRoadmap: {
+    phases: LearningPhase[];
+    estimatedTotalHours: number;
+    prerequisites: string[];
+  };
+  buildingGuide: {
+    coreFeatures: CoreFeature[];
+    implementationOrder: string[];
+    testingStrategy: string[];
+  };
+  skillsGained: string[];
+  xpReward: number;
+  difficultyJustification: string;
+}
+
+export interface LearningPhase {
+  id: string;
+  title: string;
+  description: string;
+  estimatedHours: number;
+  steps: LearningStep[];
+  prerequisites: string[];
+  deliverable: string;
+}
+
+export interface CoreFeature {
+  name: string;
+  description: string;
+  complexity: 'Low' | 'Medium' | 'High';
+  estimatedHours: number;
+  dependencies: string[];
+  keyComponents: string[];
+}
