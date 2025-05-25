@@ -1,4 +1,3 @@
-
 import { GitHubRepo, ProjectAnalysis, LearningStep, TechStack } from '../types';
 
 export interface AIAnalysisResult {
@@ -25,6 +24,7 @@ export interface AIAnalysisResult {
   skillsGained: string[];
   xpReward: number;
   difficultyJustification: string;
+  readmeContent: string;
 }
 
 export interface LearningPhase {
@@ -86,7 +86,7 @@ export const simulateAIAnalysis = async (repo: GitHubRepo): Promise<AIAnalysisRe
   const analysis = analyzeRepositoryContent(repo, readmeContent);
   
   console.log(`✅ AI analysis complete for ${repo.name}`);
-  return analysis;
+  return { ...analysis, readmeContent };
 };
 
 const analyzeRepositoryContent = (repo: GitHubRepo, readmeContent: string): AIAnalysisResult => {
@@ -106,7 +106,8 @@ const analyzeRepositoryContent = (repo: GitHubRepo, readmeContent: string): AIAn
     buildingGuide,
     skillsGained,
     xpReward,
-    difficultyJustification: generateDifficultyJustification(complexity, techStack, repo)
+    difficultyJustification: generateDifficultyJustification(complexity, techStack, repo),
+    readmeContent
   };
 };
 

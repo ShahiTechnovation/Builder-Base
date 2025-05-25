@@ -92,6 +92,7 @@ export interface AIAnalysisResult {
   skillsGained: string[];
   xpReward: number;
   difficultyJustification: string;
+  readmeContent: string;
 }
 
 export interface LearningPhase {

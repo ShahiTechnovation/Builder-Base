@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useWeb3 } from '../contexts/Web3Context';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -170,6 +169,7 @@ const Builder = () => {
           <AIAnalysisDisplay
             analysis={aiAnalysis.analysis}
             repositoryName={aiAnalysis.repo.name}
+            repositoryUrl={aiAnalysis.repo.html_url}
             onStartLearning={() => {
               toast({
                 title: "Learning Path Saved!",

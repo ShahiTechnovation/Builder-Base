@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { Button } from './ui/button';
+import { ReadmeViewer } from './ReadmeViewer';
 import { 
   Brain, 
   Clock, 
@@ -15,19 +16,22 @@ import {
   Star,
   Zap,
   BookOpen,
-  Wrench
+  Wrench,
+  FileText
 } from 'lucide-react';
 import { AIAnalysisResult } from '../lib/aiSimulation';
 
 interface AIAnalysisDisplayProps {
   analysis: AIAnalysisResult;
   repositoryName: string;
+  repositoryUrl?: string;
   onStartLearning?: () => void;
 }
 
 export const AIAnalysisDisplay: React.FC<AIAnalysisDisplayProps> = ({
   analysis,
   repositoryName,
+  repositoryUrl,
   onStartLearning
 }) => {
   const getComplexityColor = (complexity: string) => {
@@ -70,6 +74,13 @@ export const AIAnalysisDisplay: React.FC<AIAnalysisDisplayProps> = ({
           </div>
         </CardHeader>
       </Card>
+
+      {/* README Viewer */}
+      <ReadmeViewer 
+        content={analysis.readmeContent} 
+        repositoryName={repositoryName}
+        repositoryUrl={repositoryUrl}
+      />
 
       {/* Project Overview */}
       <Card>
