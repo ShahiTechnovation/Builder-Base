@@ -56,8 +56,8 @@ Builder Base is the ultimate Web3 learning platform where developers showcase th
 
 Connect with like-minded developers, learners, and innovators who are building the future of decentralized education.
 
-- 🐦 [Telegram]((https://t.me/TheBuilderBase))
-- 📬 [Whatsapp]([https://your-platform.com/newsletter](https://chat.whatsapp.com/Iko7hynwsRmAl6PJu86HMJ))
+- 🐦 [Telegram] -  https://t.me/TheBuilderBase
+- 📬 WhatsApp Community - https://chat.whatsapp.com/Iko7hynwsRmAl6PJu86HMJ
 
 ---
 
