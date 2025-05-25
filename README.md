@@ -71,18 +71,5 @@ Connect with like-minded developers, learners, and innovators who are building t
 
 ---
 
-## 🛠️ Contributing
-
-We welcome contributions from developers, designers, and educators!  
-To contribute:
-
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/my-feature`)
-5. Create a Pull Request
-
----
-
 > **Builder Base** – Learn. Build. Earn. Repeat. 🌐
 
