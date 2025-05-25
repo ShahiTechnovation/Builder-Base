@@ -66,7 +66,7 @@ Connect with like-minded developers, learners, and innovators who are building t
 - **Frontend:** React, TailwindCSS, Web3.js / Ethers.js
 - **Backend:** Node.js, Express, MongoDB
 - **AI/ML:** Python, GPT-powered analysis
-- **Web3:** BNB Testnet, IPFS / Arweave for storage
+- **Web3:** BNB Testnet
 - **Auth:** WalletConnect, MetaMask
 
 ---
